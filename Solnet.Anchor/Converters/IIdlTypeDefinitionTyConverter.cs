@@ -34,34 +34,30 @@ namespace Solnet.Anchor.Converters
 
                 string typeName = reader.GetString();
                 
-
                 reader.Read();
                 if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException("Unexpected error value.");
 
                 propertyName = reader.GetString();
-                if ("docs" != propertyName) throw new JsonException("Unexpected error value.");
-
-                reader.Read();
-                if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException("Unexpected error value.");
-
-                reader.Read();
-                if (reader.TokenType != JsonTokenType.String) throw new JsonException("Unexpected error value.");
-
-                again:
-                reader.Read();
-                if (reader.TokenType == JsonTokenType.String)
+                if (propertyName == "docs")
                 {
+                    reader.Read();
+                    if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException("Unexpected error value.");
+
+                    reader.Read();
                     if (reader.TokenType != JsonTokenType.String) throw new JsonException("Unexpected error value.");
-                    goto again;
+
+                    again:
+                    reader.Read();
+                    if (reader.TokenType == JsonTokenType.String) goto again;
+
+                    if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException("Unexpected error value.");
+
+                    reader.Read();
+                    if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException("Unexpected error value.");
+
+                    propertyName = reader.GetString();
                 }
 
-                if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException("Unexpected error value.");
-                
-
-                reader.Read();
-                if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException("Unexpected error value.");
-
-                propertyName = reader.GetString();
                 if ("type" != propertyName) throw new JsonException("Unexpected error value.");
 
                 reader.Read();
